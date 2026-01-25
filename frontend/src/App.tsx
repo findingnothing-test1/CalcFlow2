@@ -1,9 +1,17 @@
 import { useState } from "react";
 
+type HistoryItem = {
+  a: number;
+  b: number;
+  operator: "+" | "-" | "*" | "/";
+  result: number;
+};
+
 function App() {
   const [valueA, setValueA] = useState("");
   const [valueB, setValueB] = useState("");
   const [result, setResult] = useState<string | number>("");
+  const [history,setHistory] = useState<HistoryItem[]>([]);
 
   const handleOperation = (operator: "+" | "-" | "*" | "/") => {
     const numA = parseFloat(valueA);
@@ -33,6 +41,14 @@ function App() {
   }
 
   setResult(res);
+  const newItem: HistoryItem = {
+    a: numA,
+    b: numB,
+    operator,
+    result: res,
+  };
+
+  setHistory((prev) => [newItem, ...prev]);
 };
 
   return (
@@ -63,6 +79,19 @@ function App() {
       </div>
 
       <h3>Result: {result !== null ? result : "—"}</h3>
+      <hr />
+
+      <h3>History</h3>
+
+      {history.length === 0 && <p>No calculations yet.</p>}
+
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        {history.map((item, index) => (
+          <li key={index} style={{ marginBottom: "6px" }}>
+            {item.a} {item.operator} {item.b} = {item.result}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
